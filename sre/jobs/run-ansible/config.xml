@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>ansbileの実行ジョブ</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.BooleanParameterDefinition>
+          <name>check</name>
+          <description>実行しますか？</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>tags</name>
+          <description>実行タグを指定</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>os_common</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>server</name>
+          <description>対象サーバを選択</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>inventry</string>
+              <string>192.168.10.41</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>action</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>task-check</string>
+              <string>dry-run</string>
+              <string>run</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>if [ &quot;${check}&quot; = &quot;false&quot; ] ; then
+    exit 1
+fi
+
+if [ &quot;${tags}&quot; = &quot;all&quot; ] ; then
+  if [ &quot;${action}&quot; = &quot;task-check&quot; ] ; then
+    cd /opt/sre/ansible/ &amp;&amp;  ansible-playbook -i production -s -e target=prod site.yml --vault-password-file=/var/lib/jenkins/ansible_vault.conf --check --list-task --list-hosts
+  elif [ &quot;${action}&quot; = &quot;dry-run&quot; ] ; then
+    cd /opt/sre/ansible/ &amp;&amp;  ansible-playbook -i production -s -e target=prod site.yml --vault-password-file=/var/lib/jenkins/ansible_vault.conf --check
+  elif [ &quot;${action}&quot; = &quot;run&quot; ] ; then
+    cd /opt/sre/ansible/ &amp;&amp;  ansible-playbook -i production -s -e target=prod site.yml --vault-password-file=/var/lib/jenkins/ansible_vault.conf
+  fi
+elif [ &quot;${server}&quot; = &quot;inventry&quot; ] ; then
+  if [ &quot;${action}&quot; = &quot;task-check&quot; ] ; then
+    cd /opt/sre/ansible/ &amp;&amp;  ansible-playbook -t ${tags} -i production -s -e target=prod site.yml --vault-password-file=/var/lib/jenkins/ansible_vault.conf --check --list-task --list-hosts
+  elif [ &quot;${action}&quot; = &quot;dry-run&quot; ] ; then
+    cd /opt/sre/ansible/ &amp;&amp;  ansible-playbook -t ${tags} -i production -s -e target=prod site.yml --vault-password-file=/var/lib/jenkins/ansible_vault.conf --check
+  elif [ &quot;${action}&quot; = &quot;run&quot; ] ; then
+    cd /opt/sre/ansible/ &amp;&amp;  ansible-playbook -t ${tags} -i production -s -e target=prod site.yml --vault-password-file=/var/lib/jenkins/ansible_vault.conf
+  fi
+else
+  if [ &quot;${action}&quot; = &quot;task-check&quot; ] ; then
+    cd /opt/sre/ansible/ &amp;&amp;  ansible-playbook -t ${tags} -l ${server} -i production -s -e target=prod site.yml --vault-password-file=/var/lib/jenkins/ansible_vault.conf --check --list-task --list-hosts
+  elif [ &quot;${action}&quot; = &quot;dry-run&quot; ] ; then
+    cd /opt/sre/ansible/ &amp;&amp;  ansible-playbook -t ${tags} -l ${server} -i production -s -e target=prod site.yml --vault-password-file=/var/lib/jenkins/ansible_vault.conf --check
+  elif [ &quot;${action}&quot; = &quot;run&quot; ] ; then
+    cd /opt/sre/ansible/ &amp;&amp;  ansible-playbook -t ${tags} -l ${server} -i production -s -e target=prod site.yml --vault-password-file=/var/lib/jenkins/ansible_vault.conf
+  fi
+fi</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
