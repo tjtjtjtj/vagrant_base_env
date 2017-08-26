@@ -38,12 +38,9 @@ wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.r
 rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key
 yum -y install jenkins
 #jenkinsでのrun-ansibleのための設定関連
-#うまくいかないことがあるので,lsしてみる
-ls -l /vagrant
-ls -l ${JENKINS_HOME}/jobs
+mkdir ${JENKINS_HOME}/jobs
 cp -r /vagrant/sre ${JENKINS_HOME}/jobs
-ls -l ${JENKINS_HOME}/jobs
-chown -R jenkins:jenkins ${JENKINS_HOME}/jobs/sre
+chown -R jenkins:jenkins ${JENKINS_HOME}/jobs
 ##create an ansible-vault file (ansible-vault is required at run-ansible runtime)
 echo $(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1) > ${JENKINS_HOME}/ansible_vault.conf
 chown jenkins:jenkins ${JENKINS_HOME}/ansible_vault.conf
