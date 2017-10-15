@@ -20,7 +20,8 @@ Vagrant.configure("2") do |config|
         #なぜか、centos7.2のnetwork.serviceをリスタートしないとipが有効にならないので
         nodeconfig.vm.provision "shell", inline: <<-SHELL
         systemctl restart network.service
-        echo "systemctl restart network.service" >> /etc/rc.local
+        cp /vagrant/my-rc.local.service /etc/systemd/system
+        chmod 644 /etc/systemd/system/my-rc.local.service
         SHELL
       end
       memory = node[:ram] ? node[:ram] : 1024;
