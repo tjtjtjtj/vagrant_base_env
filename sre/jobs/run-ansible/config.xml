@@ -17,6 +17,7 @@
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
               <string>os_common</string>
+              <string>develop</string>
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
@@ -26,6 +27,7 @@
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
               <string>inventry</string>
+              <string>develop</string>
               <string>192.168.10.41</string>
             </a>
           </choices>
