@@ -22,6 +22,7 @@ Vagrant.configure("2") do |config|
         systemctl restart network.service
         echo "systemctl restart network.service" >> /etc/rc.local
         SHELL
+      end
       memory = node[:ram] ? node[:ram] : 1024;
       nodeconfig.vm.provider :virtualbox do |vb|
         vb.customize [
