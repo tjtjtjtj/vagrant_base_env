@@ -1,8 +1,8 @@
 nodes = [
-  { :hostname => "vm001",   :ip => "192.168.10.41", :box => "centos7.2" },
-  { :hostname => "vm002",   :ip => "192.168.10.42", :box => "centos7.2" },
-#  { :hostname => "vm003",   :ip => "192.168.10.43", :box => "centos7.2" },
-#  { :hostname => "vm004",   :ip => "192.168.10.44", :box => "centos7.2" },
+  { :hostname => "vm001",   :ip => "192.168.20.41", :box => "centos7.2" },
+  { :hostname => "vm002",   :ip => "192.168.20.42", :box => "centos7.2" },
+  { :hostname => "vm003",   :ip => "192.168.20.43", :box => "centos7.2" },
+#  { :hostname => "vm004",   :ip => "192.168.20.44", :box => "centos7.2" },
 ]
 
 Vagrant.configure("2") do |config|
@@ -16,10 +16,12 @@ Vagrant.configure("2") do |config|
       else
         nodeconfig.vm.provision "shell", :path => "slave_setup.sh"
       end
-      #なぜか、network.serviceをリスタートしないとipが有効にならないので
-      nodeconfig.vm.provision "shell", inline: <<-SHELL
-      systemctl restart network.service
-      SHELL
+      if node[:box] == "centos7.2"
+        #なぜか、centos7.2のnetwork.serviceをリスタートしないとipが有効にならないので
+        nodeconfig.vm.provision "shell", inline: <<-SHELL
+        systemctl restart network.service
+        echo "systemctl restart network.service" >> /etc/rc.local
+        SHELL
       memory = node[:ram] ? node[:ram] : 1024;
       nodeconfig.vm.provider :virtualbox do |vb|
         vb.customize [
