@@ -22,6 +22,7 @@ Vagrant.configure("2") do |config|
         systemctl restart network.service
         cp /vagrant/my-rc.local.service /etc/systemd/system
         chmod 644 /etc/systemd/system/my-rc.local.service
+        systemctl enable my-rc.local.service
         SHELL
       end
       memory = node[:ram] ? node[:ram] : 1024;
